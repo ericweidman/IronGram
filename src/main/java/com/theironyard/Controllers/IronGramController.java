@@ -49,6 +49,7 @@ public class IronGramController {
         if (user == null) {
             user = new User(username, PasswordStorage.createHash(password));
             users.save(user);
+
         } else if (!PasswordStorage.verifyPassword(password, user.getPasswordHash())) {
             throw new Exception("Wrong password!");
         }
