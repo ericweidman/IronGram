@@ -7,18 +7,22 @@ import com.theironyard.services.UserRepository;
 import com.theironyard.utils.PasswordStorage;
 import org.h2.tools.Server;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.parsing.Location;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
-
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.sql.SQLException;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.List;
 
 /**
@@ -26,6 +30,8 @@ import java.util.List;
  */
 @RestController
 public class IronGramController {
+
+
     @Autowired
     UserRepository users;
     @Autowired
@@ -65,10 +71,11 @@ public class IronGramController {
         return users.findByName(username);
 
     }
+
     @RequestMapping(path = "/upload", method = RequestMethod.POST)
     public Photo upload(MultipartFile photo, HttpSession session, HttpServletResponse response) throws Exception {
-     String username = (String) session.getAttribute("username");
-        if(username == null){
+        String username = (String) session.getAttribute("username");
+        if (username == null) {
             throw new Exception("Not logged in.");
         }
 
@@ -82,9 +89,10 @@ public class IronGramController {
         response.sendRedirect("/");
         return p;
     }
-    @RequestMapping(path = "/photos", method = RequestMethod.GET)
-    public List<Photo> showPhotos(){
-        return (List<Photo>) photos.findAll();
-    }
 
+    @RequestMapping(path = "/photos", method = RequestMethod.GET)
+    public List<Photo> showPhotos() throws IOException{
+            return (List<Photo>) photos.findAll();
+
+    }
 }
